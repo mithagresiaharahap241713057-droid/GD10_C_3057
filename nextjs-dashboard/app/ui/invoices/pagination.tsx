@@ -4,17 +4,31 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { generatePagination } from '@/app/lib/utils';
+// 1. Tambahkan import hooks dari next/navigation
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
-  // NOTE: Uncomment this code in Chapter 10
+  // 2. Inisialisasi hooks untuk membaca URL saat ini
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  // Ambil angka halaman aktif dari URL (misal ?page=2), default ke 1 jika kosong
+  const currentPage = Number(searchParams.get('page')) || 1;
 
-  // const allPages = generatePagination(currentPage, totalPages);
+  // 3. Buat array angka halaman yang akan ditampilkan (uncomment baris ini)
+  const allPages = generatePagination(currentPage, totalPages);
+
+  // 4. Fungsi untuk membuat link URL tujuan berdasarkan nomor halaman yang diklik
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
 
   return (
     <>
-      {/*  NOTE: Uncomment this code in Chapter 10 */}
-
-      {/* <div className="inline-flex">
+      {/* 5. Seluruh blok tampilan pagination dibuka komentarnya (uncomment) */}
+      <div className="inline-flex">
         <PaginationArrow
           direction="left"
           href={createPageURL(currentPage - 1)}
@@ -47,7 +61,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
           href={createPageURL(currentPage + 1)}
           isDisabled={currentPage >= totalPages}
         />
-      </div> */}
+      </div>
     </>
   );
 }
